@@ -1,1 +1,104 @@
+The SOLID principles are a set of five design principles for writing clean, scalable, and maintainable object-oriented code. These are highly applicable to Android development, especially when using MVVM, Clean Architecture, Dependency Injection, and modular design.
 
+📦 S.O.L.I.D Principles in Android (With Real Examples)
+🅢 Single Responsibility Principle (SRP)
+A class should have only one reason to change.
+
+✅ Example:
+Break down logic in Android:
+
+❌ Bad: Activity doing too much
+
+class MainActivity : AppCompatActivity() {
+    fun fetchData() { /* API Call */ }
+    fun saveToDb() { /* DB Code */ }
+}
+✅ Good: Separated responsibilities
+kotlin
+Copy
+Edit
+class MainActivity : AppCompatActivity() {
+    private val viewModel: MainViewModel by viewModels()
+}
+
+class MainViewModel : ViewModel() {
+    fun fetchData() = repository.getData()
+}
+
+class Repository {
+    fun getData() = api.fetchData()
+}
+
+🅞 Open/Closed Principle (OCP)
+Software should be open for extension, but closed for modification.
+
+✅ Example:
+Use interfaces and polymorphism.
+
+interface Logger {
+    fun log(msg: String)
+}
+
+class FileLogger : Logger {
+    override fun log(msg: String) { /* log to file */ }
+}
+
+class RemoteLogger : Logger {
+    override fun log(msg: String) { /* send to server */ }
+}
+Now, new loggers can be added without modifying existing code.
+
+🅛 Liskov Substitution Principle (LSP)
+Objects of a superclass should be replaceable by objects of a subclass without altering the correctness.
+
+✅ Example:
+
+
+open class User {
+    open fun getDiscount() = 0
+}
+
+class PremiumUser : User() {
+    override fun getDiscount() = 20
+}
+Everywhere you use User, you can replace it with PremiumUser without breaking logic.
+
+🅘 Interface Segregation Principle (ISP)
+Clients should not be forced to depend on interfaces they do not use.
+
+✅ Example:
+Break larger interfaces into smaller, more specific ones.
+
+interface Camera {
+    fun takePhoto()
+    fun recordVideo()
+    fun applyFilter()
+}
+
+⬇️ Better:
+
+interface PhotoCapture {
+    fun takePhoto()
+}
+
+interface VideoRecording {
+    fun recordVideo()
+}
+🅓 Dependency Inversion Principle (DIP)
+High-level modules should not depend on low-level modules.
+Both should depend on abstractions (interfaces).
+
+✅ Example: Use Dependency Injection (e.g., Hilt)
+
+interface AnalyticsService {
+    fun logEvent(name: String)
+}
+
+class FirebaseAnalyticsService : AnalyticsService {
+    override fun logEvent(name: String) { /* log */ }
+}
+
+class AnalyticsManager @Inject constructor(
+    private val analyticsService: AnalyticsService
+)
+Now AnalyticsManager doesn't depend on Firebase, but on an abstraction.
